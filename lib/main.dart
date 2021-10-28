@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_flip/arch_utils/utils/connection_status_singleton.dart';
 
 void main() {
+  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+  connectionStatus.initialize();
   runApp(const MyApp());
 }
 

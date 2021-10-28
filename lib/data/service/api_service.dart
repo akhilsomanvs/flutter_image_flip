@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
-import 'package:image_flip/repositories/api/api_exception.dart';
+import 'package:image_flip/data/repositories/api/api_exception.dart';
 
-class ApiRepository {
-  final String _apiUrl = "https://api.imgflip.com/get_memes";
+class ApiService {
+  static const String _apiUrl = "https://api.imgflip.com/get_memes";
 
-  Future<dynamic> fetchMemes() async {
+  static Future<dynamic> fetchMemes() async {
     var responseJson;
     try {
       final response = await http.get(Uri.parse(_apiUrl));
@@ -17,7 +18,7 @@ class ApiRepository {
     return responseJson;
   }
 
-  dynamic _returnResponse(http.Response response) {
+  static dynamic _returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
         var responseJson = json.decode(response.body.toString());

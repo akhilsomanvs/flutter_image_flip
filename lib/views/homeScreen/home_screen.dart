@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_flip/arch_utils/ui/responsize_builder.dart';
 import 'package:image_flip/arch_utils/ui/size_config.dart';
-import 'package:image_flip/arch_utils/widgets/responsive_safe_area.dart';
-import 'package:image_flip/models/get_meme_response.dart';
+import 'package:image_flip/controllers/meme_controller.dart';
 import 'package:image_flip/styles/app_theme.dart';
-import 'package:image_flip/views/commonWidgets/meme_container.dart';
 import 'package:image_flip/views/commonWidgets/meme_list_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:image_flip/controllers/meme_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -63,21 +60,40 @@ class _HomeScreenState extends State<HomeScreen> {
                   //Memes from the API
                   Consumer<MemeController>(
                     builder: (context, controller, child) {
-                      if (controller.memeResponseModel != null) {
-                        final memeList = controller.memeResponseModel!.data.memes;
-                        return MemeListWidget(
-                          key: const Key("Tab1"),
-                          memeList: memeList,
-                          onSaveTap: (isSaved, meme) {
-                            if (isSaved) {
-                              controller.removeMeme(meme);
-                            } else {
-                              controller.saveMeme(meme);
-                            }
-                          },
+                      if (controller.showLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        if (!controller.hasError && controller.memeResponseModel != null) {
+                          final memeList = controller.memeResponseModel!.data.memes;
+                          return MemeListWidget(
+                            key: const Key("Tab1"),
+                            memeList: memeList,
+                            onSaveTap: (isSaved, meme) {
+                              if (isSaved) {
+                                controller.removeMeme(meme);
+                              } else {
+                                controller.saveMeme(meme);
+                              }
+                            },
+                          );
+                        }
+                        return Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(controller.errorMessage,
+                                  textAlign: TextAlign.center, style: AppTheme.textTheme.bodyText1),
+                              OutlinedButton(
+                                onPressed: () {
+                                  controller.getMemes();
+                                },
+                                child:
+                                    Text("Retry ?", textAlign: TextAlign.center, style: AppTheme.textTheme.bodyText1),
+                              ),
+                            ],
+                          ),
                         );
                       }
-                      return Center(child: Text("Could Not Get Memes", style: AppTheme.textTheme.bodyText1));
                     },
                   ),
 

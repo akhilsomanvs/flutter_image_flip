@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:image_flip/data/dataSources/local_data_source.dart';
 import 'package:image_flip/data/dataSources/remote_data_source.dart';
+import 'package:image_flip/data/repositories/api/api_response.dart';
 import 'package:image_flip/models/get_meme_response.dart';
 
 class MemeController extends ChangeNotifier {
   bool showLoading = false;
+  bool hasError = false;
+  String errorMessage = "";
 
   GetMemeResponseModel? memeResponseModel;
 
@@ -15,7 +18,7 @@ class MemeController extends ChangeNotifier {
 
   get savedMemesList => _memesList.where((e) => e.isSaved).toList();
 
-  getMemes() async {
+  getMemes({Function? onFailure}) async {
     showLoading = true;
     notifyListeners();
 
@@ -23,9 +26,15 @@ class MemeController extends ChangeNotifier {
     final response = await RemoteDataSource().fetchMemeMetaData();
     if (response.data != null && response.data is GetMemeResponseModel) {
       memeResponseModel = response.data;
+      hasError = false;
+      errorMessage = "";
+
       if (memeResponseModel != null) {
         _memesList = memeResponseModel!.data.memes;
       }
+    } else if (response.status == Status.ERROR) {
+      hasError = true;
+      errorMessage = response.message ?? "";
     }
     await getSavedMemes();
     for (var meme in _memesList) {
@@ -54,9 +63,16 @@ class MemeController extends ChangeNotifier {
 
   getSavedMemes() async {
     _savedMemesList = await LocalDataSource.getSavedMemes();
-    for (var element in _memesList) {
-      final index = _savedMemesList.indexWhere((meme) => meme.id == element.id);
-      element.isSaved = index != -1;
+    if (_memesList.isNotEmpty) {
+      for (var element in _memesList) {
+        final index = _savedMemesList.indexWhere((meme) => meme.id == element.id);
+        element.isSaved = index != -1;
+      }
+    } else {
+      _savedMemesList.forEach((element) {
+        element.isSaved = true;
+        _memesList.add(element);
+      });
     }
     notifyListeners();
   }

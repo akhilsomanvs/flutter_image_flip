@@ -18,6 +18,9 @@ class SizeConfig {
   static bool isPortrait = true;
   static bool isMobilePortrait = false;
 
+
+  static double get screenWidth => _screenWidth;
+
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
     isPortrait = _mediaQueryData.orientation == Orientation.portrait;

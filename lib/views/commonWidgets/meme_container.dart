@@ -5,10 +5,9 @@ import 'package:image_flip/models/get_meme_response.dart';
 import 'package:image_flip/styles/app_theme.dart';
 
 class MemeContainer extends StatelessWidget {
-  MemeContainer({Key? key, this.onSaveTap, required this.meme, this.isSaved = false}) : super(key: key);
+  MemeContainer({Key? key, this.onSaveTap, required this.meme,}) : super(key: key);
   final Memes meme;
   final Function(bool)? onSaveTap;
-  bool isSaved = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +58,7 @@ class MemeContainer extends StatelessWidget {
                 ),
                 Align(
                   alignment: Alignment.topRight,
-                  child: SaveIcon(onSaveTap: onSaveTap, isSaved: isSaved),
+                  child: SaveIcon(onSaveTap: onSaveTap, isSaved: meme.isSaved),
                 )
               ],
             ),

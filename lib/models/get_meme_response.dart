@@ -52,6 +52,8 @@ class Memes {
   late final int height;
   late final int boxCount;
 
+  bool isSaved=false;
+
   Memes.fromJson(Map<String, dynamic> json){
     id = json['id'];
     name = json['name'];

@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.image_flip">
    <application
-        android:label="image_flip"
+        android:label="Image Flip"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

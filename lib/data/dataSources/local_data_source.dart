@@ -11,4 +11,9 @@ class LocalDataSource {
   static removeMemeFromDB(Memes meme) async {
     await _dao.delete(meme);
   }
+
+  static Future<List<Memes>> getSavedMemes() async {
+    final list = await _dao.getAllMemes();
+    return list;
+  }
 }

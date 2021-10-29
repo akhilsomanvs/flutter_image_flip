@@ -5,7 +5,11 @@ import 'package:image_flip/models/get_meme_response.dart';
 import 'package:image_flip/styles/app_theme.dart';
 
 class MemeContainer extends StatelessWidget {
-  MemeContainer({Key? key, this.onSaveTap, required this.meme,}) : super(key: key);
+  MemeContainer({
+    Key? key,
+    this.onSaveTap,
+    required this.meme,
+  }) : super(key: key);
   final Memes meme;
   final Function(bool)? onSaveTap;
 
@@ -29,7 +33,20 @@ class MemeContainer extends StatelessWidget {
             height: containerHeight,
             child: Stack(
               children: [
-                Center(child: Image.network(meme.url)),
+                Center(
+                  child: Image.network(
+                    meme.url,
+                    errorBuilder: (context, obj, stackTrace) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("Could Not Load Image",style: AppTheme.textTheme.bodyText1,),
+                          const Icon(Icons.report_gmailerrorred_sharp, color: Colors.red),
+                        ],
+                      );
+                    },
+                  ),
+                ),
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

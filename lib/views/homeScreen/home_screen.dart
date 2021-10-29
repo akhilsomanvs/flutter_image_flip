@@ -5,6 +5,7 @@ import 'package:image_flip/arch_utils/widgets/responsive_safe_area.dart';
 import 'package:image_flip/models/get_meme_response.dart';
 import 'package:image_flip/styles/app_theme.dart';
 import 'package:image_flip/views/commonWidgets/meme_container.dart';
+import 'package:image_flip/views/commonWidgets/meme_list_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:image_flip/controllers/meme_controller.dart';
 
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.read<MemeController>().getSavedMemes();
               }
             },
-            tabs: [
+            tabs: const [
               Tab(
                 text: "Memes",
               ),
@@ -65,12 +66,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (controller.memeResponseModel != null) {
                         final memeList = controller.memeResponseModel!.data.memes;
                         return MemeListWidget(
+                          key: const Key("Tab1"),
                           memeList: memeList,
                           onSaveTap: (isSaved, meme) {
                             if (isSaved) {
-                              controller.saveMeme(meme);
-                            } else {
                               controller.removeMeme(meme);
+                            } else {
+                              controller.saveMeme(meme);
                             }
                           },
                         );
@@ -83,7 +85,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   Consumer<MemeController>(
                     builder: (context, controller, child) {
                       if (controller.savedMemesList.isNotEmpty) {
-                        return MemeListWidget(memeList: controller.savedMemesList);
+                        return MemeListWidget(
+                          key: const Key("Tab2"),
+                          memeList: controller.savedMemesList,
+                          onSaveTap: (isSaved, meme) {
+                            if (isSaved) {
+                              controller.removeMeme(meme);
+                            } else {
+                              controller.saveMeme(meme);
+                            }
+                          },
+                        );
                       }
                       return Center(child: Text("No saved Memes", style: AppTheme.textTheme.bodyText1));
                     },
@@ -94,35 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }),
       ),
-    );
-  }
-}
-
-class MemeListWidget extends StatelessWidget {
-  MemeListWidget({Key? key, this.onSaveTap, required this.memeList, this.isSaved = false}) : super(key: key);
-  final List<Memes> memeList;
-  final Function(bool, Memes)? onSaveTap;
-  bool isSaved = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: memeList.length,
-      itemBuilder: (context, index) {
-        final meme = memeList[index];
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.vdp(), horizontal: 8.hdp()),
-          child: MemeContainer(
-            meme: meme,
-            isSaved: isSaved,
-            onSaveTap: (isSaved) {
-              if (onSaveTap != null) {
-                onSaveTap!(isSaved, meme);
-              }
-            },
-          ),
-        );
-      },
     );
   }
 }

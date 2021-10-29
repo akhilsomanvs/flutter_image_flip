@@ -98,12 +98,12 @@ class _SaveIconState extends State<SaveIcon> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        setState(() {
-          isSaved = !isSaved;
-        });
         if (widget.onSaveTap != null) {
           widget.onSaveTap!(isSaved);
         }
+        setState(() {
+          isSaved = !isSaved;
+        });
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),

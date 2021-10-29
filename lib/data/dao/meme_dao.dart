@@ -21,4 +21,12 @@ class MemeDao {
     final finder = Finder(filter: Filter.byKey(meme.id));
     await _memeStore.delete(await _db, finder: finder);
   }
+
+  Future<List<Memes>> getAllMemes() async {
+    final recordSnapshots = await _memeStore.find(await _db);
+    return recordSnapshots.map((e) {
+      final meme = Memes.fromJson(e.value);
+      return meme;
+    }).toList();
+  }
 }

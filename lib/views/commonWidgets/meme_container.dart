@@ -15,72 +15,89 @@ class MemeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final checkAspectRatio = constraints.maxWidth < meme.width;
-          double containerHeight = meme.height.toDouble();
-          //This is only for the cases where the width of the image is more than the available width of the screen.
-          if (checkAspectRatio) {
-            final aspectRatio = meme.width / meme.height;
-            containerHeight = constraints.maxWidth / aspectRatio;
-          }
-          return SizedBox(
-            width: double.infinity,
-            height: containerHeight,
-            child: Stack(
-              children: [
-                Center(
-                  child: Image.network(
-                    meme.url,
-                    errorBuilder: (context, obj, stackTrace) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("Could Not Load Image",style: AppTheme.textTheme.bodyText1,),
-                          const Icon(Icons.report_gmailerrorred_sharp, color: Colors.red),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.grey.shade500.withOpacity(0.5),
-                      ],
-                      stops: const [
-                        0.5,
-                        1,
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+    final borderRadius = BorderRadius.circular(12);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: borderRadius,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 4,
+            spreadRadius: 2,
+            offset: Offset(0, 3),
+          )
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final checkAspectRatio = constraints.maxWidth < meme.width;
+            double containerHeight = meme.height.toDouble();
+            //This is only for the cases where the width of the image is more than the available width of the screen.
+            if (checkAspectRatio) {
+              final aspectRatio = meme.width / meme.height;
+              containerHeight = constraints.maxWidth / aspectRatio;
+            }
+            return SizedBox(
+              width: double.infinity,
+              height: containerHeight,
+              child: Stack(
+                children: [
+                  Center(
+                    child: Image.network(
+                      meme.url,
+                      errorBuilder: (context, obj, stackTrace) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Could Not Load Image",
+                              style: AppTheme.textTheme.bodyText1,
+                            ),
+                            const Icon(Icons.report_gmailerrorred_sharp, color: Colors.red),
+                          ],
+                        );
+                      },
                     ),
                   ),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsets.all(16.vdp()),
-                      child: Text(
-                        meme.name,
-                        style: AppTheme.textTheme.bodyText1.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.grey.shade500.withOpacity(0.5),
+                        ],
+                        stops: const [
+                          0.5,
+                          1,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.vdp()),
+                        child: Text(
+                          meme.name,
+                          style:
+                              AppTheme.textTheme.bodyText1.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: SaveIcon(onSaveTap: onSaveTap, isSaved: meme.isSaved),
-                )
-              ],
-            ),
-          );
-        },
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: SaveIcon(onSaveTap: onSaveTap, isSaved: meme.isSaved),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
